@@ -1,0 +1,19 @@
+.row{
+    margin-left:3rem;
+    color:#fff;
+}
+
+.posters{
+    display: flex;
+    padding:3rem;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.posters .poster{
+    max-height: 15rem;
+    margin-right:0.8rem;
+}
+
+.posters::-webkit-scrollbar{
+    display: none;
+  }
