@@ -7,6 +7,8 @@ import YouTube from "react-youtube";
 function Rowpost(props) {
   const [movies, setMovies] = useState([]);
   const [urlid, setUrlid] = useState("");
+  const [obj,setObj] = useState({});
+  const [review,setReview] = useState([]);
   useEffect(() => {
     axios
       .get(props.url)
@@ -26,17 +28,34 @@ function Rowpost(props) {
       autoplay: 1,
     },
   };
-  const handleMovie = (id) => {
-    console.log(id);
+  const handleMovie = (obj) => {
+    //console.log(obj.id);
     axios
-      .get(`movie/${id}/videos?api_key=${API_KEY}&language=en-US`)
+      .get(`movie/${obj.id}/videos?api_key=${API_KEY}&language=en-US`)
       .then((response) => {
         if (response.data.results.length !== 0) {
           setUrlid(response.data.results[0]);
+          setObj(obj)
         } else {
           console.log("trailer not available");
         }
       });
+  };
+  const handleClose = ()=>{
+    setUrlid(null)
+    setObj({})
+
+  };
+  const handleReviewRequest = (obj) =>{
+    axios
+      .get(`movie/${obj.id}/reviews?api_key=${API_KEY}&language=en-US&page=1`)
+      .then((response) => {
+        if (response.data.results.length !== 0) {
+          setReview(response.data.results[0]);
+        } else {
+          console.log("review not available");
+        }
+      })
   };
   return (
     <div className="row">
@@ -46,11 +65,10 @@ function Rowpost(props) {
           //console.log(obj)
           return (
             <div >
-              <div className={props.isSmall ? "small-flip-card" : "flip-card"}>
+              <div className={props.isSmall ? "small-flip-card" : "flip-card"} onClick={() => handleMovie(obj)}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
                       <img
-                          onClick={() => handleMovie(obj.id)}
                           src={`${imageUrl + obj.backdrop_path}`}
                           alt=""
                           className={props.isSmall ? "small-poster" : "poster"}
@@ -67,7 +85,36 @@ function Rowpost(props) {
           );
         })}
       </div>
+      {urlid&&<button className="close-section-button" onClick={handleClose}>X</button>}
+      <div className="expand"> 
+      <div className="details" id="details" >
+        {obj.id?<h2>{obj.title?obj.title:obj.name}</h2>:''}
+        {console.log(obj.id)}
+        {obj.id?<p>Rating ★ : {obj.vote_average}/10 </p>:''}
+        {obj.id?<p>Rating count : {obj.vote_count}</p>:''}
+        {obj.id?<p>Language : {obj.original_language=="en"?"English":"Unknown"}</p>:''}
+        {obj.id?<p>{obj.overview}</p>:''}
+        {obj.id?<button className="review-button" onClick={()=>handleReviewRequest(obj)}>See Reviews</button>:''}
+      </div>
+      <div className="video">
       {urlid && <YouTube videoId={urlid.key} opts={opts} />}
+      </div>
+      </div>
+      <div className="Review">
+        <div className="review-box">
+          {
+          review.map((obj)=>{
+            return(
+              <div>
+                <p>{obj.author}</p>
+                <p>{obj.content}</p>
+                <p>{obj.created_at}</p>
+              </div>
+            );
+          })
+        }
+        </div>
+      </div>
     </div>
   );
 }

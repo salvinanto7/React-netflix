@@ -96,3 +96,31 @@
     margin-right:0.8rem;
     border-radius: 0.25rem;
 }
+
+.expand{
+    display: flex;
+    flex-direction: row;
+}
+.details{
+    width:40%;
+    margin:auto;
+}
+.video{
+    width:60%;
+}
+
+.close-section-button{
+    width:2rem;
+    height:2rem;
+    color:black;
+    background-color: white;
+    border-radius: 0.5rem;
+}
+
+.review-button{
+    margin-top: 1rem;
+    color:black;
+    background-color: white;
+    border-radius: 0.5rem;
+    padding:1rem;
+}
