@@ -123,4 +123,22 @@
     background-color: white;
     border-radius: 0.5rem;
     padding:1rem;
+    cursor: pointer;
+}
+
+.review-card{
+    margin:5rem;
+    background-color: aliceblue;
+    border-radius: 1rem;
+    color:black;
+    height: fit-content;
+}
+
+.review-card .profile{
+    margin:2rem;
+    padding:2rem;
+}
+
+.profile-img img{
+    z-index: 999;
 }

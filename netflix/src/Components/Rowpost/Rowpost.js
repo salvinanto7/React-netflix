@@ -41,7 +41,7 @@ function Rowpost(props) {
         }
       });
   };
-  const handleClose = ()=>{
+  const handleCloseVideo = ()=>{
     setUrlid(null)
     setObj({})
 
@@ -50,12 +50,17 @@ function Rowpost(props) {
     axios
       .get(`movie/${obj.id}/reviews?api_key=${API_KEY}&language=en-US&page=1`)
       .then((response) => {
+        console.log(response.data)
         if (response.data.results.length !== 0) {
-          setReview(response.data.results[0]);
+          setReview(response.data.results);
         } else {
           console.log("review not available");
         }
       })
+  };
+  const handleCloseReview = ()=>{
+    console.log("close review")
+    setReview([])
   };
   return (
     <div className="row">
@@ -85,14 +90,14 @@ function Rowpost(props) {
           );
         })}
       </div>
-      {urlid&&<button className="close-section-button" onClick={handleClose}>X</button>}
+      {urlid&&<button className="close-section-button" onClick={handleCloseVideo}>X</button>}
       <div className="expand"> 
       <div className="details" id="details" >
         {obj.id?<h2>{obj.title?obj.title:obj.name}</h2>:''}
         {console.log(obj.id)}
         {obj.id?<p>Rating ★ : {obj.vote_average}/10 </p>:''}
         {obj.id?<p>Rating count : {obj.vote_count}</p>:''}
-        {obj.id?<p>Language : {obj.original_language=="en"?"English":"Unknown"}</p>:''}
+        {obj.id?<p>Language : {obj.original_language==="en"?"English":"Unknown"}</p>:''}
         {obj.id?<p>{obj.overview}</p>:''}
         {obj.id?<button className="review-button" onClick={()=>handleReviewRequest(obj)}>See Reviews</button>:''}
       </div>
@@ -101,14 +106,26 @@ function Rowpost(props) {
       </div>
       </div>
       <div className="Review">
+      {review.length>0 && <button className="close-section-button" onClick={handleCloseReview}>X</button>}
         <div className="review-box">
           {
           review.map((obj)=>{
             return(
               <div>
-                <p>{obj.author}</p>
-                <p>{obj.content}</p>
-                <p>{obj.created_at}</p>
+              <div className="review-card">
+                <div className="profile">
+                  <div className="profile-img">
+                    {review&&<img  src="/netflix/public/images/user.png" alt="" />}
+                  </div>
+                  <div>
+                    {review&&<p>{obj.created_at}</p>}
+                    {review&&<h4>{obj.author}</h4>}
+                  </div>
+                </div>
+                <div className="content">
+                  {review&&<p>{obj.content}</p>}
+                </div>                
+              </div>
               </div>
             );
           })
