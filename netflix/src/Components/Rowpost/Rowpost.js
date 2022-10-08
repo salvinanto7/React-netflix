@@ -28,8 +28,10 @@ function Rowpost(props) {
       autoplay: 1,
     },
   };
-  const handleMovie = (obj) => {
-    //console.log(obj.id);
+  const handleMovie = (obj,props) => {
+    console.log(obj);
+    console.log(props)
+    if(props.url.slice(9,10)==="m"){
     axios
       .get(`movie/${obj.id}/videos?api_key=${API_KEY}&language=en-US`)
       .then((response) => {
@@ -40,23 +42,60 @@ function Rowpost(props) {
           console.log("trailer not available");
         }
       });
-  };
+    }else{
+      axios
+      .get(`/tv/${obj.id}/videos?api_key=${API_KEY}&language=en-US&page=1`)
+      .then((response) => {
+        if (response.data.results.length !== 0) {
+          setUrlid(response.data.results[0]);
+          setObj(obj)
+        } else {
+          console.log("trailer not available");
+        }
+    })
+  }};
   const handleCloseVideo = ()=>{
     setUrlid(null)
     setObj({})
 
   };
-  const handleReviewRequest = (obj) =>{
-    axios
-      .get(`movie/${obj.id}/reviews?api_key=${API_KEY}&language=en-US&page=1`)
-      .then((response) => {
-        console.log(response.data)
-        if (response.data.results.length !== 0) {
-          setReview(response.data.results);
-        } else {
-          console.log("review not available");
-        }
+  const handleReviewRequest = (obj,props) =>{
+    console.log(props.url)
+    
+    if(props.url.slice(9,10)==="m"){
+      //console.log("movie")
+      axios
+        .get(`movie/${obj.id}/reviews?api_key=${API_KEY}&language=en-US`)
+        .then((response) => {
+          if (response.data.results.length !== 0) {
+            console.log(response.data)
+            setReview(response.data.results);
+          } else {
+            console.log("review not available");
+          }
+        });
+      }else{
+        axios
+        .get(`/tv/${obj.id}/reviews?api_key=${API_KEY}&language=en-US&page=1`)
+        .then((response) => {
+          if (response.data.results.length !== 0) {
+            setReview(response.data.results);
+          } else {
+            console.log("review not available");
+          }
       })
+    }
+
+    // axios
+    //   .get(`movie/${obj.id}/reviews?api_key=${API_KEY}&language=en-US&page=1`)
+    //   .then((response) => {
+    //     console.log(response.data)
+    //     if (response.data.results.length !== 0) {
+    //       setReview(response.data.results);
+    //     } else {
+    //       console.log("review not available");
+    //     }
+    //   })
   };
   const handleCloseReview = ()=>{
     console.log("close review")
@@ -70,7 +109,7 @@ function Rowpost(props) {
           //console.log(obj)
           return (
             <div >
-              <div className={props.isSmall ? "small-flip-card" : "flip-card"} onClick={() => handleMovie(obj)}>
+              <div className={props.isSmall ? "small-flip-card" : "flip-card"} onClick={() => handleMovie(obj,props)}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
                       <img
@@ -99,7 +138,7 @@ function Rowpost(props) {
         {obj.id?<p>Rating count : {obj.vote_count}</p>:''}
         {obj.id?<p>Language : {obj.original_language==="en"?"English":"Unknown"}</p>:''}
         {obj.id?<p>{obj.overview}</p>:''}
-        {obj.id?<button className="review-button" onClick={()=>handleReviewRequest(obj)}>See Reviews</button>:''}
+        {obj.id?<button className="review-button" onClick={()=>handleReviewRequest(obj,props)}>See Reviews</button>:''}
       </div>
       <div className="video">
       {urlid && <YouTube videoId={urlid.key} opts={opts} />}
