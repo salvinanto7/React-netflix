@@ -154,7 +154,7 @@ function Rowpost(props) {
               <div className="review-card">
                 <div className="profile">
                   <div className="profile-img">
-                    {review&&<img  src="/netflix/public/images/user.png" alt="" />}
+                    {review&&<img  className="userimg" src="images/user.png" alt="user" />}
                   </div>
                   <div>
                     {review&&<p>{obj.created_at}</p>}
